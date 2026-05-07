@@ -1,10 +1,3 @@
-"""
-InputValidator.py
------------------
-Validates all user input before it reaches the schedulers.
-Raises ValidationError with a human-readable message on failure.
-"""
-
 
 class ValidationError(Exception):
     pass

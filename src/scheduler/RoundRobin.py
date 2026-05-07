@@ -1,14 +1,3 @@
-"""
-scheduler/RoundRobin.py
------------------------
-Round Robin scheduling algorithm.
-
-Returns
--------
-gantt   : list of (pid, start, end) tuples
-metrics : dict  { pid: {'WT': int, 'TAT': int, 'RT': int} }
-"""
-
 from collections import deque
 from src.model.process import Process
 

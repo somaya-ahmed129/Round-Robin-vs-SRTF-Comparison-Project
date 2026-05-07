@@ -1,16 +1,3 @@
-"""
-MainWindow.py
--------------
-Main GUI for the Round Robin vs SRTF CPU Scheduler Comparison.
-
-All algorithm logic is delegated to:
-  scheduler/RoundRobin.py  →  round_robin_scheduler(processes, quantum)
-  scheduler/SRTF.py        →  srtf_scheduler(processes)
-  metrics/calculator.py    →  averages_from_metrics(metrics)
-  InputValidator.py        →  validate_quantum(), ValidationError
-"""
-
-
 
 import tkinter as tk
 from tkinter import ttk, messagebox, font as tkfont

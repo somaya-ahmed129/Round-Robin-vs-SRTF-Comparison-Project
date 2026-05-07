@@ -1,14 +1,3 @@
-"""
-scheduler/SRTF.py
------------------
-Shortest Remaining Time First (preemptive SJF).
-
-Returns
--------
-gantt   : list of (pid, start, end) tuples
-metrics : dict  { pid: {'WT': int, 'TAT': int, 'RT': int} }
-"""
-
 from src.model.process import Process
 
 

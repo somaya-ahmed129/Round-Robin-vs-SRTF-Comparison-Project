@@ -1,10 +1,3 @@
-"""
-metrics/calculator.py
----------------------
-Pure functions — no GUI dependencies.
-All functions accept plain dicts so they work with both scheduler outputs.
-"""
-
 
 def calculate_tat(completion_time, arrive_time):
     return {p: completion_time[p] - arrive_time[p] for p in arrive_time}
