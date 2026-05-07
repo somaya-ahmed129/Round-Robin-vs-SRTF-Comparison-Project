@@ -1,109 +1,110 @@
-import copy
-from src.GUI.GanttChart import GanttEntry
-from model.process import Process
+"""
+scheduler/SRTF.py
+-----------------
+Shortest Remaining Time First (preemptive SJF).
+
+Returns
+-------
+gantt   : list of (pid, start, end) tuples
+metrics : dict  { pid: {'WT': int, 'TAT': int, 'RT': int} }
+"""
+
+from src.model.process import Process
 
 
-def run_srtf(processes):
-
-    procs=[copy.deepcopy(p) for p in processes]
-
-    gantt=[]      #will hold the gannt_chart object
-    completed=[]  #processs thta have finished
-    time=0        #current clock_tick
-
-    current_pid=None
-    segmant_start=0
-
-    while len(completed) < len(procs):
-
-        ready=[p for p in procs if p.arrival_time<=time and not p.is_finished()]
-
-        if not ready:
-            # CPU idle
-            if current_pid is not None:
-                gantt.append(GanttEntry(current_pid,segmant_start,time))
-                current_pid= None
-
-            
-            #jump forward to the next process arrival
-            next_arrival=min(p.arrival_time for p in procs if not p.is_finished())  
-            gantt.append(GanttEntry("IDLE", time, next_arrival))
-            time=next_arrival
-            segmant_start=time
-            continue 
-        #pick process with shortest remaining_time
-
-        chosen=min(ready,key=lambda p:(p.remaining_time,p.arrival_time,p.pid))
-
-        #record the first time this process touches the CPU
-
-        if chosen.start_time is None:
-            chosen.start_time=time
-            chosen.response_time=time-chosen.arrival_time
-
-        #if the running process changed,close the previous segmant and open a new one for the chosen process
-
-        if chosen.pid != current_pid:
-            if current_pid is not None:
-                gantt.append(GanttEntry(current_pid,segmant_start,time))
-            current_pid=chosen.pid
-            segmant_start=time
-        #execute for exactly one time unit
-
-        chosen.remaining_time -=1
-        time +=1
-
-        #check if the process just finished
-
-        if chosen.is_finished():
-            chosen.finish_time=time
-            chosen.turnaround_time=chosen.finish_time-chosen.arrival_time
-            chosen.waiting_time=chosen.turnaround_time-chosen.burst_time
-            completed.append(chosen)
-
-            #close its gantt segmant
-
-            gantt.append(GanttEntry(chosen.pid,segmant_start,time))
-            current_pid=None
-            segmant_start=time
-
-    #Sort the results by PID for consistent display in the UI
-    completed.sort(key=lambda p:p.pid)
-
-    # Merge adjacent entries that have the same PID (can happen after idle
-    # slots or when two separate segments are actually contiguous)
-    gantt = _merge_consecutive(gantt)
- 
-    return completed, gantt
-
-# ─── Helper ──────────────────────────────────────────────────────────────────
- 
-def _merge_consecutive(gantt):
+def srtf_scheduler(processes):
     """
-    Merge back-to-back Gantt entries that share the same PID.
- 
-    Example:
-        [("P1", 0, 2), ("P1", 2, 4)]  →  [("P1", 0, 4)]
- 
-    This happens when SRTF runs the same process for multiple ticks without
-    interruption — the one-tick loop produces many tiny entries that we tidy
-    up here rather than cluttering the main loop logic.
+    Parameters
+    ----------
+    processes : list of Process objects (will NOT be mutated)
+
+    Returns
+    -------
+    gantt   : list[(pid, start, end)]
+    metrics : dict{ pid: {'WT':int, 'TAT':int, 'RT':int} }
     """
+    if not processes:
+        return [], {}
+
+    proc_list = [Process(p.pid, p.arrival_time, p.burst_time) for p in processes]
+    proc_list.sort(key=lambda p: (p.arrival_time, p.pid))
+
+    n            = len(proc_list)
+    done         = 0
+    current_time = min(p.arrival_time for p in proc_list)
+    gantt        = []
+    first_start  = {}
+    completion   = {}
+
+    prev_pid    = None
+    block_start = current_time
+
+    while done < n:
+        available = [p for p in proc_list
+                     if p.arrival_time <= current_time and p.remaining_time > 0]
+
+        # Idle gap
+        if not available:
+            if prev_pid is not None:
+                gantt.append((prev_pid, block_start, current_time))
+                prev_pid = None
+            nxt = min((p.arrival_time for p in proc_list if p.remaining_time > 0),
+                      default=None)
+            if nxt is None:
+                break
+            current_time = nxt
+            block_start  = current_time
+            continue
+
+        cur = min(available, key=lambda p: (p.remaining_time, p.arrival_time, p.pid))
+
+        if cur.pid not in first_start:
+            first_start[cur.pid] = current_time
+
+        if cur.pid != prev_pid:
+            if prev_pid is not None:
+                gantt.append((prev_pid, block_start, current_time))
+            block_start = current_time
+            prev_pid    = cur.pid
+
+        cur.remaining_time -= 1
+        current_time       += 1
+
+        if cur.remaining_time == 0:
+            completion[cur.pid] = current_time
+            done               += 1
+            gantt.append((cur.pid, block_start, current_time))
+            prev_pid    = None
+            block_start = current_time
+
+    if prev_pid is not None:
+        gantt.append((prev_pid, block_start, current_time))
+
+    # Merge consecutive same-pid blocks
+    gantt = _merge(gantt)
+
+    metrics = {}
+    for p in proc_list:
+        tat = completion[p.pid] - p.arrival_time
+        wt  = tat - p.burst_time
+        rt  = first_start[p.pid] - p.arrival_time
+        metrics[p.pid] = {'WT': wt, 'TAT': tat, 'RT': rt}
+
+    return gantt, metrics
+
+
+def _merge(gantt):
     if not gantt:
         return gantt
- 
     merged = [gantt[0]]
- 
     for entry in gantt[1:]:
         last = merged[-1]
-        # If same PID and the new entry starts exactly where the last one ended
-        if entry.pid == last.pid and entry.start == last.end:
-            # Extend the last entry instead of appending a new one
-            merged[-1] = GanttEntry(last.pid, last.start, entry.end)
+        if entry[0] == last[0] and entry[1] == last[2]:
+            merged[-1] = (last[0], last[1], entry[2])
         else:
             merged.append(entry)
- 
     return merged
+
             
         
 
