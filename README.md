@@ -28,10 +28,9 @@ The application provides:
 - Object-Oriented Programming (OOP)
 
 
-## How to Run
+## **How to Run**
 
 1. Open terminal in project root folder
-
 2. Run the following command:
 
 ```bash
