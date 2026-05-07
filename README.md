@@ -38,7 +38,8 @@ The application provides:
 python -m src.GUI.MainWindow
 
 
-## Team Members
+
+## **Team Members**
 
 - Somaya Ahmed Farouk Hassan Hussein    
 - Salma Magar Ahmed
