@@ -26,24 +26,31 @@ The application provides:
 - Python 3.13
 - Tkinter GUI
 - Object-Oriented Programming (OOP)
+  
+## **Team Members**
+Somaya Ahmed Farouk Hassan Hussein
+
+Salma Magar Ahmed
+
+Rawan Mohamed Abdelrahman Eissa
+
+Somaia Mohamed Mohamed Abdallah
+
+Salma Mohamed Fattouh Ahmed
+
+Shahd Sami AbdelAti Fouda
 
 
 ## **How to Run**
 
-1. Open terminal in project root folder
+1. Open terminal in project root folder.
 2. Run the following command:
-
 ```bash
 python -m src.GUI.MainWindow
 
 
 
-## **Team Members**
 
-- Somaya Ahmed Farouk Hassan Hussein    
-- Salma Magar Ahmed
-- Rawan Mohamed Abdelrahman Eissa
--Somaia Mohamed Mohamed Abdallah
--Salma Mohamed Fattouh Ahmed
--Shahd Sami AbdelAti Fouda
--Malak Atallah Hussein
+
+
+
