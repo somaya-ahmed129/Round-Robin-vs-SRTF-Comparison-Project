@@ -32,14 +32,15 @@ Somaya Ahmed Farouk Hassan Hussein
 
 Salma Magar Ahmed
 
-Rawan Mohamed Abdelrahman Eissa
+Rawan Mahmoud Abdelrahman Eissa
 
 Somaia Mohamed Mohamed Abdallah
 
 Salma Mohamed Fattouh Ahmed
 
-Shahd Sami AbdelAti Fouda
+Shahd Sami Abdel-ati Foudah
 
+Malak Atallh Hussien 
 
 ## **How to Run**
 
