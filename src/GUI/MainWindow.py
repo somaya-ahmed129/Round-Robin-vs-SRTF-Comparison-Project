@@ -160,7 +160,7 @@ class SchedulerGUI:
             scrollregion=canvas.bbox("all")))
         canvas.create_window((0, 0), window=inner, anchor="nw", width=400)
         canvas.configure(yscrollcommand=sb.set)
-
+                                                                                                                                                                                                
         canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         sb.pack(side=tk.RIGHT, fill=tk.Y)
 
