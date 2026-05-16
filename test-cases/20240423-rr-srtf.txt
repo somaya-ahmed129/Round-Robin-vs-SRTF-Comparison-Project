@@ -1,0 +1,108 @@
+﻿TEST CASES
+
+
+ test case 1 :
+add process 1 with arrival time 0 & burst time 6
+add process 2 with arrival time 1 & burst time 4
+add process 3 with arrival time 2 & burst time 2
+add process 4 with arrival time 3 & burst time 8
+add process 5 with arrival time 4 & burst time 3
+
+
+ Expected Result:
+Process added successfully.
+Actual Result:
+Process added successfully
+
+
+  
+
+
+
+  
+  
+
+
+
+
+
+
+
+test case 2:
+negative time quantum -2
+
+
+ Expected Result:
+Process failed.
+Actual Result:
+Process failed and show error message
+
+
+
+
+  
+
+
+
+test case3:
+burst time >0
+
+
+ Expected Result:
+Process failed.
+Actual Result:
+Process failed and show error message
+
+
+  
+
+test case 4:
+negative arrival time
+
+
+ Expected Result:
+Process failed.
+Actual Result:
+Process failed and show error message
+
+
+  
+
+
+
+test case 5:
+non integer id 
+
+
+ Expected Result:
+Process failed.
+Actual Result:
+Process failed and show error message
+
+
+  
+
+test case 6:
+enter only one process
+
+
+ Expected Result:
+Process failed.
+Actual Result:
+Process failed and show error message
+
+
+
+
+  
+
+
+
+case 7:
+enter an id is already exist
+
+
+ Expected Result:
+Process failed.
+Actual Result:
+Process failed and show error message
